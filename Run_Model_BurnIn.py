@@ -23,8 +23,7 @@ current_directory = os.getcwd()
 # Autocorrelation_tiem --> int; returns int giving the autocorrelation time
 # runs the whole model. Individual Parameters for models or functions have to be adjusted in the according files
 
-def Run_Model(model: str, N: int, Seconds: int, h: float, compiled = 8):
-    print("In der Funktion wird es ausgeführt....")
+def Run_Model(model: str, N: int, Seconds: int, h: float, compiled):
     # initialize state_value_old, Alphaa (homostatic array)
     state_value_old = []
     # initializing Alpha. As k = 4 in the models we use 0.25 for h≠1 (h=1 we use 0 so that it doesnt take so long until its giving resonable results)
@@ -69,7 +68,8 @@ def Run_Model(model: str, N: int, Seconds: int, h: float, compiled = 8):
         # get Connection Array
         # if it is the first iteration or AA is chosen we draw the Connection_arr
         if (model == "SC_Compiled") and (i == 0):
-            with open(current_directory + r'/Models/Compiled_Models_SC/SC_' + str(compiled) + '.pkl', 'rb') as file:
+            file_path = os.path.join(current_directory, 'Models', 'Compiled_Models_SC', f'SC_{compiled}.pkl')
+            with open(file_path, 'rb') as file:
                 Connection_arr, Somata, Axons  = pickle.load(file)
         if (model != "AA") and (model != "SC_Compiled") and (model != "ER_Fixed") and  (i == 0): 
             Connection_arr = Get_connection_array(N, model)

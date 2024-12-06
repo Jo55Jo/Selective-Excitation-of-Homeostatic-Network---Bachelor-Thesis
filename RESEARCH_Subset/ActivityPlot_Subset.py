@@ -15,7 +15,7 @@ plt.rcParams['figure.subplot.hspace'] = 0.2
 import os
 import matplotlib.pyplot as plt
 
-def create_activityplot_subset(activity_list1: list, activity_list2: list, color_plot: str, h_string: str):
+def create_activityplot_subset(activity_list1: list, activity_list2: list, color_plot: str, h_string: str, Sec: int):
     # Erstellen der Figur und Zugriff auf ihre Größe
     fig = plt.figure(figsize=(6, 3), dpi=200)
     fig_width, fig_height = fig.get_size_inches()
@@ -26,14 +26,35 @@ def create_activityplot_subset(activity_list1: list, activity_list2: list, color
     tick_fontsize_y = fig_height * 5.0    # Beispiel: 5.0 mal die Höhe der Figur
     tick_fontsize_x = fig_height * 3.0    # Beispiel: 5.0 mal die Höhe der Figur
 
+
     # X-Achse: Zeit in diskreten Zeitschritten (Sekunden / delta_t)
     x = range(len(activity_list1))
-    # Normalize with N/4 because delta_t is 4 for average activity in the paper
-    normalize = cons.N / 4
+
+    # ormalize (1000 Zeitschritte) und geteilt durch 4 für die mittlere Aktivität
+    normalize = 1000 / 4
 
     # Y-Achse: Aktivitätswerte
     y1 = activity_list1
     y2 = activity_list2
+
+    # Falls Sec angegeben ist, 30-Sekunden Intervall ab Sec auswählen
+    if Sec > 0:
+        start_index = int(Sec * normalize)
+        end_index = int((Sec + 30) * normalize)
+        x = range(start_index, end_index)
+        y1 = activity_list1[start_index:end_index]
+        y2 = activity_list2[start_index:end_index]
+        
+        # Labels für 10, 20, 30 Sekunden
+        x_tick_labels = [i * 10 for i in range(4)]
+        x_tick_positions = [start_index + i * int(normalize * 10) for i in range(4)]
+        plt.xticks(ticks=x_tick_positions, labels=x_tick_labels, fontsize=tick_fontsize_x)
+    else:
+        # Festgelegte x-Ticks in 10er-Schritten für die gesamte Zeitreihe
+        x_tick_positions = [int(i * normalize * 10) for i in range(len(x) // int(normalize * 10) + 1)]
+        x_tick_labels = [i * 10 for i in range(len(x_tick_positions))]
+        plt.xticks(ticks=x_tick_positions, labels=x_tick_labels, fontsize=tick_fontsize_x)
+
 
     # Plotte die erste Liste (Group1)
     plt.plot(x, y1, color=color_plot, linewidth=1, label='Active')

@@ -15,10 +15,10 @@ Burn_In = 1
 # Annealed average: "AA"
 # Erdos renyi: "ER"
 # Spacial Clustered: "SC"
-# Compiled SC: SC_Compiled
+# Compiled SC: "SC_Compiled"
 # Erdos with same connection lengths as SC-Compiled: "Erdos_Compiled" 
 # If compiled models are chosen, N must be of same size as the compiled model
-model = "Erdos_Compiled"
+model = "SC_Compiled"
 
 # Number of connections for AA
 k = 75

@@ -1,5 +1,10 @@
 import numpy as np
 import math
+import os
+import sys
+# append parent directory for importing constants
+parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir))
+sys.path.append(parent_dir)
 from Models import Annealed_Average as AA
 from Models import Erdos_Network as ER
 from Models import Spacial_Clustered as SC
@@ -8,6 +13,7 @@ from Functions_Constants_Meters import Functions as funs
 from Functions_Constants_Meters import Constants as cons
 from Functions_Constants_Meters import Meters as meters
 import pickle
+
 
 # String (modell), int (size), int(iterations), float (input is one of: [0, 0.1, 0.01, 0.001, 0.0001]) -> , list (Population activity), list of np.ndarrays (individual activity), list (Branching Paramete$
 # model is one of: "AA", "ER", "SC", "SC_10000_{i}"
@@ -80,7 +86,8 @@ def Run_Model_subset(model: str, N: int, Seconds: int, h: float, compiled=10):
         # get Connection Array
         # if it is the first iteration or AA is chosen we draw the Connection_arr
         if (model == "SC_Compiled") and (i == 0):
-            with open(r'/home/levina/lfz080/Walka/Implementierung_Bachelorarbeit/Models/Compiled_Models_SC/SC_' + str(compiled) + '.pkl', 'rb') as file:
+            file_path = os.path.join(parent_dir, 'Models', 'Compiled_Models_SC', f'SC_{compiled}.pkl')
+            with open(file_path, 'rb') as file:
                 Connection_arr, Somata, Axons  = pickle.load(file)
         if (model != "AA") and (model != "SC_Compiled") and (model != "ER_Fixed") and  (i == 0): 
             Connection_arr = Get_connection_array(N, model)
@@ -223,7 +230,7 @@ def Run_Model_subset(model: str, N: int, Seconds: int, h: float, compiled=10):
         state_value_old = state_value_new
         state_value_new = []
 
-        if (i % 100000 == 0):
+        if (i % 1000 == 0):
             print(str(i/1000) + " Seconds of " + str(Seconds))
 
     return Global_act, Branching_global, Autocorrelation, Average_Activity_sub, Average_Activity_rest, Average_Alpha_sub, Average_Alpha_rest, Avalanche_Distribution, Time_Distribution, Avalanche_Distribution_sub, Avalanche_Distribution_rest, branch_sub, branch_rest
@@ -234,14 +241,8 @@ def Get_connection_array(N, model: str):
 
     if model == "ER":
         Connection_array = ER.Erdos_Network(N)
-    elif model == "ER_POP":
-        Connection_array = ER.Erdos_Inhomogen(N, cons.s1, cons.p1i, cons.p1e, cons.p2i, cons.p2e)
     elif model == "SC":
         Connection_array = SC.Spacial_Clustered(N)
-    elif model == "ER_Mountain":
-        Connection_array = ER.Erdos_Mountain(cons.N, cons.Fixed)
-    elif model == "HM":
-        Connection_array = HM.HierarchicalModel(level=cons.level)
     elif model == "Erdos_Compiled":
         Connection_array = ER.Erdos_Compiled(N, cons.compiled)
     return Connection_array

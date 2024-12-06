@@ -8,7 +8,7 @@ cons.Subset = False
 cons.Fluctuating_h = False
 
 # Running the model, please set variables in Constants.py
-Global_act, Branching_global, Autocorrelation, Average_Activity, Average_Alpha, Avalanche_Distribution = BurnIn.Run_Model(cons.model, cons.N, cons.Seconds, h=cons.h)
+Global_act, Branching_global, Autocorrelation, Average_Activity, Average_Alpha, Avalanche_Distribution = BurnIn.Run_Model(cons.model, cons.N, cons.Seconds, h=cons.h, compiled=cons.compiled)
 
 
 

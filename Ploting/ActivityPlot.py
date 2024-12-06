@@ -47,6 +47,7 @@ def create_activityplot(activity_list: list, color_plot: str, h_string: str, Sec
         plt.xticks(ticks=x_tick_positions, labels=x_tick_labels, fontsize=tick_fontsize_x)
 
     # Plot
+    print(len(x), len(y))
     plt.plot(x, y, color=color_plot, linewidth=1)
 
     # Nur die linke und untere Achse sichtbar machen
